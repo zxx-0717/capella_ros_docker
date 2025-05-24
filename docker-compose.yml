@@ -1,0 +1,44 @@
+name: capella-ros
+services:
+  core:
+    image: ritju/capella-ros:latest
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    environment:
+      - CAPELLA_ROS_HEADLESS=True
+      - LASER_SCAN="laser_scan_wr_20"
+      - ROBOT_VERSION="bainan_2"
+    restart: always
+    labels:
+      - "com.ritju.capella.auto-update=true"
+  agent:
+    image: ritju/capella-agent:latest
+    volumes:
+      - agent_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /bin/systemctl:/bin/systemctl
+      - /run/systemd/system:/run/systemd/system
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    environment:
+      - CAPELLA_UPDATE_CHECK_INTERVAL=3600
+      - PRODUCT_ID=ROBOT_ID_HERE_OR_IN_ENVIRONMENT_VARIABLE
+    restart: always
+    privileged: true
+    labels:
+      - "com.ritju.capella.auto-update=true"
+  panel:
+    image: ritju/capella-panel:latest
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix/
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      - DISPLAY=$DISPLAY
+      - CAPELLA_AGENT_SERVER_HOST=agent
+      - CAPELLA_AGENT_SERVER_PORT=5000
+    restart: always
+    labels:
+      - "com.ritju.capella.auto-update=true"
+volumes:
+  agent_data:

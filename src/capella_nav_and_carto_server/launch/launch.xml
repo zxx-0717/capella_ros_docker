@@ -1,0 +1,7 @@
+<launch>
+    <arg name="headless" default="$(env CAPELLA_ROS_HEADLESS True)" />
+
+    <node pkg="capella_nav_and_carto_server" exec="node_manager" output="screen">
+        <param name="headless" value="$(var headless)"/>
+    </node>
+</launch>

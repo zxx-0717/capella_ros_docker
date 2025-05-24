@@ -1,0 +1,76 @@
+name: capella-ros
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - WORKSPACE=/workspaces/capella_ros_docker
+    devices:
+      # - /dev/ttyACM0:/dev/ttyUSB0
+      - /dev:/dev
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/dri:/dev/dri
+    environment:
+      - DISPLAY=$DISPLAY
+      - CAPELLA_ROS_HEADLESS=True
+      - LASER_SCAN=laser_scan_wr_20 # 每台都需要配置
+      - ROBOT_VERSION=ad_4 # 每台都需要配置
+      - LINEAR_SCALE=0.98273 # 每台都需要配置
+      - ANGLE_SCALE=1.009204 # 每台都需要配置
+      - LASER_MIN_ANGLE=-1.57 # 每台都需要配置
+      - LASER_MAX_ANGLE=1.57 # 每台都需要配置
+      - LASER_MIN_RANGE=0.20 # 每台都需要配置
+      - LOCALIZATION_MODE=CARTO
+      - ROBOT_NAV_MODE=AD
+      - USE_DEPTH_CAMERA=True
+      - USE_TELEOP_TWIST_JOY=False
+      - CAMERA1_NUMBER=CH2Y831004T # 每台都需要配置
+      - CAMERA2_NUMBER=CH2Y8310067 # 每台都需要配置
+      - CAMERA3_NUMBER=CH2Y831008K # 每台都需要配置
+      - CYCLONEDDS_URI=/map/dds.xml
+      # - marker_id_and_bluetooth_mac=585/94:C9:60:43:BE:06,586/94:C9:60:43:BE:05,587/94:C9:60:43:BE:07 # 每台都需要配置
+      - marker_id_and_bluetooth_mac=2/94:C9:60:43:BE:07,4/94:C9:60:43:BE:06,3/94:C9:60:43:BE:05
+      - CHARGER_MARKER_TYPE=APRILTAG # 每台都需要配置
+      - ARUCO_MARKER_SIZE=0.15 # 每台都需要配置
+      - APRILTAG_MARKER_SIZE=0.10 # 每台都需要配置
+      - LOCALIZATION_CHECK_WIDTH=10
+      - LOCALIZATION_CHECK_HEIGHT=10
+      - GLOBAL_LINEAR_SEARCH_WINDOW=300
+      - ROS_LOCALHOST_ONLY=0
+      - MIN_LOCALIZATION_SCORE_FOR_OPTIMIZE=0.7
+      - MAYBE_ADD_LOCAL_CONSTRAINT_THRESHOLD=0.7
+      - ISOBSTACLEBACK_MIN_DISTANCE=-0.65
+      - ISOBSTACLEBACK_MAX_DISTANCE=-0.54
+      - ISOBSTACLEULTRA_MIN_DISTANCE=0.5
+      - ISOBSTACLEULTRA_MAX_DISTANCE=0.61
+      - FRONT_X=0.8
+      - FRONT_FACE_Y=0.6
+      - FRONT_STRAIGHT_X=1.6
+      - FRONT_PERSON_Y=0.4
+      # - ROS_DOMAIN_ID=1
+    volumes:
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+      - /dev/dri:/dev/dri
+      # - /home/tj2022/map:/map
+      - /dev/bus/usb:/dev/bus/usb
+      - agent_data:/data
+      - posegraph_export:/tmp/.posegraph_export
+      - ../:/workspaces/capella_ros_docker
+    platform: "linux/x86-64"
+    runtime: nvidia
+    privileged: true
+    network_mode: host
+    labels:
+      - "com.ritju.capella.auto-update=true"
+    cap_add: 
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    command: sleep infinity
+    user: ros
+
+volumes:
+  agent_data:
+  posegraph_export:

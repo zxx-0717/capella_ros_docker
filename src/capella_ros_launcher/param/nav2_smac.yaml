@@ -1,0 +1,346 @@
+#自适应蒙特卡洛定位
+amcl:
+  ros__parameters:
+    use_sim_time: False
+    alpha1: 0.2 #从旋转角度考虑机器人里程计的旋转噪声
+    alpha2: 0.2 #机器人平移分量中的里程计旋转噪音，噪声在机器人左右两边分布
+    alpha3: 0.2 #机器人平移过程中的里程计平移噪音，沿着机器人前进方向分布
+    alpha4: 0.2 #机器人旋转过程中的里程计平移噪音， 斜角方向上的运动噪声
+    alpha5: 0.2 #仅适用于全向式（Omni）: 平移噪声
+    base_frame_id: "base_footprint"
+    beam_skip_distance: 0.5
+    beam_skip_error_threshold: 0.9
+    beam_skip_threshold: 0.3
+    do_beamskip: false
+    global_frame_id: "map" #定位系统发布的坐标系名称
+    lambda_short: 0.1
+    laser_likelihood_max_dist: 2.0
+    laser_max_range: 30.0 #要考虑的最大扫描范围
+    laser_min_range: 0.8  #要考虑的最小扫描范围
+    laser_model_type: "likelihood_field"
+    max_beams: 60
+    max_particles: 2000
+    min_particles: 500
+    odom_frame_id: "odom"
+    pf_err: 0.05
+    pf_z: 0.99
+    recovery_alpha_fast: 0.0
+    recovery_alpha_slow: 0.0
+    resample_interval: 1
+    robot_model_type: "differential"
+    save_pose_rate: 0.5
+    sigma_hit: 0.2
+    tf_broadcast: true
+    transform_tolerance: 1.0
+    update_min_a: 0.2
+    update_min_d: 0.25
+    z_hit: 0.5
+    z_max: 0.05
+    z_rand: 0.5
+    z_short: 0.05
+    scan_topic: scan
+    map_topic: map
+
+amcl_map_client:
+  ros__parameters:
+    use_sim_time: False
+
+amcl_rclcpp_node:
+  ros__parameters:
+    use_sim_time: False
+
+#导航行为树（用于加载行为树节点并根据xml配置进行调度）
+bt_navigator:
+  ros__parameters:
+    use_sim_time: False
+    global_frame: map
+    robot_base_frame: base_link
+    odom_topic: /odom
+    enable_groot_monitoring: True
+    groot_zmq_publisher_port: 1666
+    groot_zmq_server_port: 1667
+    default_bt_xml_filename: "navigate_w_replanning_and_recovery.xml"
+    plugin_lib_names: #行为树节点共享库列表
+    - nav2_compute_path_to_pose_action_bt_node
+    - nav2_follow_path_action_bt_node
+    - nav2_back_up_action_bt_node
+    - nav2_spin_action_bt_node
+    - nav2_wait_action_bt_node
+    - nav2_clear_costmap_service_bt_node
+    - nav2_is_stuck_condition_bt_node
+    - nav2_goal_reached_condition_bt_node
+    - nav2_goal_updated_condition_bt_node
+    - nav2_initial_pose_received_condition_bt_node
+    - nav2_reinitialize_global_localization_service_bt_node
+    - nav2_rate_controller_bt_node
+    - nav2_distance_controller_bt_node
+    - nav2_speed_controller_bt_node
+    - nav2_truncate_path_action_bt_node
+    - nav2_goal_updater_node_bt_node
+    - nav2_recovery_node_bt_node
+    - nav2_pipeline_sequence_bt_node
+    - nav2_round_robin_node_bt_node
+    - nav2_transform_available_condition_bt_node
+    - nav2_time_expired_condition_bt_node
+    - nav2_distance_traveled_condition_bt_node
+
+bt_navigator_rclcpp_node:
+  ros__parameters:
+    use_sim_time: False
+
+#控制器服务器
+controller_server:
+  ros__parameters:
+    use_sim_time: False
+    controller_frequency: 20.0
+    #控制器服务器会对接收到的里程计消息速度部分进行过滤,低于这个值认为是0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.2
+    min_theta_velocity_threshold: 0.001
+    progress_checker_plugin: "progress_checker" #设置用于检测机器人进展情况的进度检测器插件的映射名称，该插件用于检测机器人是否取得进展（是否在前进）
+    goal_checker_plugin: "goal_checker" #设置用于检测是否已经到达目标位置的目标检测器插件的映射名称，该插件用于检测机器人是否到达了目标位姿
+    controller_plugins: ["FollowPath"]  #设置用于处理请求和参数的控制器插件的映射名称列表
+    # Progress checker parameters
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.2
+      movement_time_allowance: 10.0 #机器人必须移动最小半径的最大时间
+    # Goal checker parameters
+    goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.25
+      stateful: True
+    # teb_local_planner parameters TEB控制器参数
+    FollowPath:
+      plugin: "teb_local_planner::TebLocalPlannerROS"
+      footprint_model.type: circular
+      footprint_model.radius: 0.21
+      #Obstacles
+      min_obstacle_dist: 0.4 #和障碍物最小距离
+      inflation_dist: 0.55 #障碍物膨胀距离
+      dynamic_obstacle_inflation_dist: 0.45 #动态障碍物的膨胀范围
+      include_dynamic_obstacles: True #是否将动态障碍物预测为速度模型
+      costmap_obstacles_behind_robot_dist: 0.9 #考虑后方n米范围内的障碍物，设置的越大，考虑范围越广，不过相对而言计算量就越大
+      costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
+      costmap_converter_spin_thread: True
+      costmap_converter_rate: 15
+      #Homotopy Class Planner
+      enable_homotopy_class_planning: False #是否输出多条轨迹
+      enable_multithreading: True #允许多线程并行处理
+      max_number_classes: 2 #输出轨迹数量
+      #visualize_hc_graph: True #可视化为探索新创建的图
+      #Optimization
+      optimization_verbose: False
+      #Trajectory
+      teb_autoresize: True #优化期间允许改变轨迹的时域长度
+      min_samples: 3
+      max_samples: 20
+      max_global_plan_lookahead_dist: 1.0 #考虑优化的全局计划子集的最大长度（累积欧几里得距离)
+                                          #（如果为0或负数：禁用；长度也受本地Costmap大小的限制
+      #Robot related parameters
+      max_vel_x: 0.26 #最大x前向速度
+      max_vel_y: 0.0
+      max_vel_x_backwards: 0.2 #最大x后退速度
+      max_vel_theta: 0.5 #最大转向角速度
+      acc_lim_x: 0.5
+      acc_lim_y: 0.0
+      acc_lim_theta: 0.5
+      min_turning_radius: 0.3 #车类机器人的最小转弯半径
+
+costmap_converter:
+  ros__parameters:
+    use_sim_time: False
+
+controller_server_rclcpp_node:
+  ros__parameters:
+    use_sim_time: False
+
+#局部代价地图
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_base_frame: base_link
+      use_sim_time: False
+      rolling_window: true #用于设置成本地图是否应该随机器人基座滚动
+      width: 3
+      height: 3
+      resolution: 0.05 #用于设置成本地图上1个像素的分辨率，单位为m
+      robot_radius: 0.21  #用于设置要使用的机器人半径
+      plugins: ["voxel_layer", "inflation_layer", "static_layer", "range_sensor_layer"]
+      #膨胀图层（Inflation Layer）参数
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55 #扩大致命障碍物周围的成本图的半径
+      #体素图层（Voxel Layer）参数
+      voxel_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: True
+        publish_voxel_map: True #用于设置是否要为调试发布3D体素网格，其计算量大
+        origin_z: 0.0      #用于设置从哪里开始标记体素即z轴原点（单位为m）
+        z_resolution: 0.05 #用于设置高度方向上（z轴）体素的分辨率（单位为m）
+        z_voxels: 16       #用于设置要标记z轴方向高度的体素个数，最多为16个体素
+        max_obstacle_height: 2.0 #用于设置返回给占用网格的障碍物最大高度
+        mark_threshold: 0  #用于设置某柱中要在2D占用网格中标记为已占用的最小体素数
+        observation_sources: scan #用于设置数据源的命名空间
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"  #用于设置某个传感器的输入数据类型，其值为LaserScan或PointCloud2
+      #静态图层（Static Layer）参数
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: True #用于设置是否将地图话题的QoS设置为瞬态本地
+      range_sensor_layer:
+        plugin: "nav2_costmap_2d::RangeSensorLayer"
+        enabled: True
+        topics: ["/ultrasonic1", "/ultrasonic2", "/ultrasonic3"]
+        clear_threshold: 0.46
+        mark_threshold: 0.98
+        clear_on_max_reading: True #是否清楚超过最大范围的数值.
+      always_send_full_costmap: True #用于设置是否在每次更新时发送完整的成本地图，而不是对成本地图进行更新
+
+  local_costmap_client:
+    ros__parameters:
+      use_sim_time: False
+
+  local_costmap_rclcpp_node:
+    ros__parameters:
+      use_sim_time: False
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_link
+      use_sim_time: False
+      robot_radius: 0.21 #用于设置要使用的机器人半径
+      resolution: 0.05 #用于设置成本地图上1个像素的分辨率，单位为m
+      track_unknown_space: true  #用于设置是否将未知空间视为空闲空间。如果为false，则会将未知空间视为空闲空间；否则视为未知空间
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: scan
+        scan:
+          topic: /scan
+          obstacle_max_range: 30.0 #在costmap中标记障碍的最大范围
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: True
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55 #扩大致命障碍物周围的成本图的半径
+      always_send_full_costmap: True
+
+  global_costmap_client:
+    ros__parameters:
+      use_sim_time: False
+
+  global_costmap_rclcpp_node:
+    ros__parameters:
+      use_sim_time: False
+
+#地图服务器（Map Server）参数
+map_server:
+  ros__parameters:
+    use_sim_time: False
+    yaml_filename: "turtlebot3_world.yaml"  #用于设置指向地图yaml文件的路径
+
+#地图保存器（Map Saver）参数
+map_saver:
+  ros__parameters:
+    use_sim_time: False
+    save_map_timeout: 5000
+    free_thresh_default: 0.25     #用于设置占用情况网格的空闲空间最大概率阈值
+    occupied_thresh_default: 0.5 #用于设置占用情况网格的占用空间最小概率阈值
+    map_subscribe_transient_local: False
+
+planner_server:
+  ros__parameters:
+    expected_planner_frequency: 20.0
+    use_sim_time: False
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "smac_planner/SmacPlanner2D"
+      tolerance: 0.25 #请求的目标姿态和路径末端之间的公差
+      downsampling_factor: 1  #设置对成本地图进行下采样的乘数因子（例如，如果对 5cm分辨率的成本地图进行下采样的乘数因子为2，则会输出分辨率为10cm的成本地图）
+      allow_unknown: true #是否允许在未知空间进行规划
+      max_iterations: 1000000 #设置限制计算时间失败之前的最大搜索迭代次数，通过设置为-1来禁用。
+      max_on_approach_iterations: 1000 #用于设置最大迭代次数，如果未找到精确的路径，则在返回使用最佳启发式算法计算的近似路径之前且搜索位于容许误差范围之内的最大迭代次数。仅限在2D A*中使用。
+      max_planning_time: 3.5 #用于设置最长的规划时间，单位为秒。
+      motion_model_for_search: "MOORE" #设置用于搜索的运动模型枚举字符串。对于Hybrid-A*，默认值为“DUBIN”。
+                                       #对于2D A*，默认值为“MOORE”。
+                                       #对于SE2节点，此参数值的可选项为DUBIN或REEDS_SHEPP。
+                                       #对于2D A*节点，此参数值的可选项为MOORE或VON_NEUMANN。
+                                       #对于状态点阵（state lattice），则要使用STATE_LATTICE作为此参数值。
+      cost_travel_multiplier: 2.0  #设置行进成本乘数。
+                                   #对于2D A*，成本乘数会应用于搜索以避开高成本区域。
+                                   #较大的值放置在过道的中心会更准确（如果有non-FREE成本潜力字段的话），但计算时间会稍长。
+                                   #为了优化速度，值1.0是合理的。一个合理的权衡值为2.0。
+                                   #值0.0会有效地禁止机器人驶离障碍物，且表现得像朴素二分搜索A*算法一样。
+      angle_quantization_bins: 1 #用于设置SE2搜索用的角度格网（angular bins）数。对于 2D A*，其值必须为1；对于SE2，其值可以是任何数字，但一个好的基线是72
+      analytic_expansion_ratio: 3.5 
+      minimum_turning_radius: 0.40 #设置车辆最小转弯半径（单位为m）。此参数还会用于平滑器以计算最大曲率
+      reverse_penalty: 2.1 #用于设置反向搜索的惩罚力度。如果反向搜索，则会对SE2节点进行启发式惩罚。仅在REEDS_SHEPP运动模型中使用
+      change_penalty: 0.15 #用于设置改变搜索方向的惩罚力度。如果在搜索中改变方向，则会对SE2节点进行启发式惩罚。
+      non_straight_penalty: 1.50 #用于设置非直线方向搜索的惩罚力度。如果在非直线方向上搜索，则会对SE2节点进行启发式惩罚。
+      cost_penalty: 1.7 #用于设置位姿成本惩罚力度。针对位姿成本对SE2节点进行启发式惩罚。允许Hybrid-A*算法具有成本意识。
+      lattice_filepath: "" #用于设置状态点阵图的文件路径
+      lookup_table_size: 20 #用于设置要缓存的dubin/reeds-sheep距离窗口大小，单位为m
+      cache_obstacle_heuristic: True #用于设置是否缓存障碍物启发式，即是否缓存相同目标位置的后续重新规划之间的障碍物地图动态编程距离扩展启发式。
+                                     #如果成本地图基本上是静态的，则可显著提高重新规划的性能（高达40倍）
+      smoother:
+        max_iterations: 1000 #用于设置平滑器最大迭代次数。
+        w_smooth: 0.3 #设置要应用于平滑数据点的平滑器权重。
+        w_data: 0.2 #设置要应用于保留原始数据信息的平滑器权重。
+        tolerance: 1e-10 #用于设置要终止平滑会话的参数容差变化量。
+
+planner_server_rclcpp_node:
+  ros__parameters:
+    use_sim_time: False
+
+recoveries_server:
+  ros__parameters:
+    costmap_topic: local_costmap/costmap_raw #用于碰撞检查的原始成本图主题
+    footprint_topic: local_costmap/published_footprint 
+    cycle_frequency: 20.0
+    recovery_plugins: ["spin", "back_up", "wait"]
+    spin: #旋转恢复器（Spin Recovery）参数
+      plugin: "nav2_recoveries/Spin"
+    back_up: #备份恢复参数
+      plugin: "nav2_recoveries/BackUp"
+    wait: #
+      plugin: "nav2_recoveries/Wait"
+    global_frame: odom
+    robot_base_frame: base_link
+    transform_timeout: 0.1
+    use_sim_time: False
+    simulate_ahead_time: 2.0 #用于设置等待碰撞的时间长度
+    max_rotational_vel: 0.5 #用于设置最大旋转速度（单位为弧度/秒）
+    min_rotational_vel: 0.32
+    rotational_acc_lim: 0.5 #用于设置最大旋转加速度（单位为弧度/秒2）
+
+robot_state_publisher:
+  ros__parameters:
+    use_sim_time: False
+
+#配置生命周期管理器
+lifecycle_manager:
+  ros__parameters:
+    autostart:true:
+    node_names: ['controller_server', 'planner_server', 'recoveries_server', 'bt_navigator', 'waypoint_follower']
+    bond_timeout: 4.0

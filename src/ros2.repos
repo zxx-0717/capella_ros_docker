@@ -1,0 +1,93 @@
+# List of repositories to use within your workspace
+# See https://github.com/dirk-thomas/vcstool
+############ 
+# Example:
+############
+repositories:
+  #包含串口程序、充电程序、imu数据处理程序等在内的程序包，若要使机器人运行，必须编译此包
+  capella_serial_pack_hcj:
+    type: git
+    url: https://github.com/ritju/capella_serial_pack_hcj.git
+    version: master
+
+  #包含4个激光雷达程序包，若要运行机器人定位、建图、导航程序，必须编译此包
+  capella_lidar_pack_wxb:
+    type: git
+    url: https://github.com/ritju/capella_lidar_pack_wxb.git
+    version: master
+
+  #包含两个自定义的接口数据包，若要使用自定义的话题或服务、动作接口，需要编译此包
+  capella_msgs:
+    type: git
+    url: https://github.com/ritju/capella_msgs.git
+    version: master
+  
+  #cartographer、cartographer_ros为2d建图数据包，若要运行建图程序需要编译此包
+  cartographer:
+    type: git
+    url: https://github.com/ritju/cartographer.git
+    version: local_ros2
+  cartographer_ros:
+    type: git
+    url: https://github.com/ritju/cartographer_ros.git
+    version: local_ros2
+
+  #navigation2中nav2_amcl / nav2_controller / nav2_dwb_controller / nav2_rotation_shim_controller 数据包的程序进行了优化改进，若要运行导航程序，建议编译navigation2数据包
+  navigation2:
+    type: git
+    url: https://github.com/ritju/navigation2.git
+    version: local_humble
+  
+  #image sensor图像话题传输包，需要编译
+  image_common:
+    type: git
+    url: https://github.com/ritju/image_common.git
+  
+  #aruco码检测和奥比中光相机程序
+  aruco_marker_location:
+    type: git
+    url: https://github.com/ritju/aruco_marker_location.git
+  
+  #遥控手柄控制程序
+  teleop_twist_joy:
+    type: git
+    url: https://github.com/ritju/teleop_twist_joy.git
+
+  #自动充电程序
+  capella_ros_dock:
+    type: git
+    url: https://github.com/ritju/capella_ros_dock.git
+
+  #wifi连接程序
+  wifiServer:
+    type: git
+    url: https://github.com/ritju/wifiServer.git
+
+  #充电管理程序
+  charge_manager_pkg:
+    type: git
+    url: https://github.com/ritju/charge_manager_pkg.git
+
+  #定位准确性评价和重定位程序
+  capella_localization_pack:
+    type: git
+    url: https://github.com/ritju/capella_localization_pack.git
+
+  #传感器话题和节点监控程序
+  capella_ros2_node_supervise:
+    type: git
+    url: https://github.com/ritju/capella_ros2_node_supervise.git
+
+  #深度相机点云转为2D scan程序
+  pointcloud_to_laserscan:
+    type: git
+    url: https://github.com/ritju/pointcloud_to_laserscan.git
+  
+  #防跌落程序
+  capella_robot_drop_proof:
+    type: git
+    url: https://github.com/ritju/capella_robot_drop_proof.git
+  
+
+
+  

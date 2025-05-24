@@ -1,0 +1,17 @@
+imu_ekf_node:
+  ros__parameters:
+    imu_pub_topic_name: "imu/data_raw"
+    imu_sub_topic_name: "imu_data_raw"
+    acc_initial_estimate_covariance: [0.000001, 0.0, 0.0, 
+                                      0.0, 0.000001, 0.0, 
+                                      0.0, 0.0, 0.000001]
+    acc_process_noise_covariance: [0.1, 0.0, 0.0,
+                                   0.0, 0.1, 0.0, 
+                                   0.0, 0.0, 0.1]
+    gyro_initial_estimate_covariance: [0.000001, 0.0, 0.0,
+                                       0.0, 0.000001, 0.0,
+                                       0.0, 0.0, 0.000001]
+    gyro_process_noise_covariance: [ 0.1,0.0, 0.0,
+                                     0.0,0.1, 0.0,
+                                     0.0, 0.0, 0.1]
+
