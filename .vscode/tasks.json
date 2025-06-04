@@ -8,7 +8,7 @@
             "label": "build",
             "detail": "Build workspace (default)",
             "type": "shell",
-            "command": "colcon build --merge-install --symlink-install --base-paths src/teleop_twist_keyboard src/teleop_twist_joy src/capella_robot_localization_check src/capella_nav_and_carto_server src/capella_ros_launcher --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/capella_msgs src/capella_ros_launcher --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -27,7 +27,405 @@
             "label": "build nav2",
             "detail": "Build Navigation2 Packages",
             "type": "shell",
-            "command": "colcon build --merge-install --symlink-install --base-paths src/navigation2/nav2_behavior_tree src/navigation2/nav2_bt_navigator src/navigation2/nav2_dwb_controller/dwb_core src/navigation2/nav2_amcl src/navigation2/nav2_dwb_controller/dwb_critics src/navigation2/nav2_controller src/navigation2/nav2_dwb_controller/dwb_plugins src/navigation2/nav2_rotation_shim_controller --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/navigation2  --parallel-workers 1 --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+
+        {
+            "label": "build nav2_all",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/navigation2/ --parallel-workers 1 --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "build nav2_bt_navigator",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/navigation2/nav2_bt_navigator src/test_nav2/navigation2/nav2_util  --parallel-workers 1 --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+
+        {
+            "label": "build capella_ros_launch",
+            "detail": "Build capella_ros_launch Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/capella_ros_launcher  --parallel-workers 1 --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start nav2",
+            "detail": "start Navigation2 Packages",
+            "type": "shell",
+            "command": "CYCLONEDDS_URI=/map/dds.xml ros2 launch capella_ros_launcher nav2_only.launch.py namespace:=MK9 use_namespace:=True",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build nav2rotation",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/navigation2/nav2_rotation_shim_controller --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build apriltag-ros",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/apriltag_ros --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build pointcloud_to_laserscan",
+            "detail": "Build pointcloud_to_laserscan Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/pointcloud_to_laserscan --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start pointcloud_to_laserscan",
+            "detail": "start pointcloud_to_laserscan Packages",
+            "type": "shell",
+            "command": "ros2 launch pointcloud_to_laserscan sample_pointcloud_to_laserscan_launch.py ",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "build elevator_pkg",
+            "detail": "Build elevator_pkg Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/elevator_pkg --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build wall_line_detection",
+            "detail": "Build wall_line_detection Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/wall_line_detection --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build garage_utils_pkg",
+            "detail": "Build garage_utils_pkg Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/garage_utils_pkg/ --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "polygons_marker_msg",
+            "detail": "pub polygons_marker_msg",
+            "type": "shell",
+            "command": "ros2 run garage_navigator publisher_polygons_marker ",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "test garage_utils_pkg",
+            "detail": "test garage_utils_pkg",
+            "type": "shell",
+            "command": "ros2 run garage_navigator test_action --ros-args --params-file /workspaces/capella_ros_docker/src/garage_utils_pkg/garage_navigator/params/config.yaml",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "launch find_free_pose",
+            "detail": "find free pose",
+            "type": "shell",
+            "command": "ros2 launch find_free_space find_free_space.launch.py ",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "welt",
+            "detail": "welt",
+            "type": "shell",
+            "command": "ros2 run welt_model welt_model",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "launch compute_right_edge_path",
+            "detail": "launch compute_right_edge_path",
+            "type": "shell",
+            "command": "ros2 launch garage_utils compute_right_edge_path.launch.py",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "launch garage_action",
+            "detail": "launch garage_action",
+            "type": "shell",
+            "command": "ros2 launch garage_navigator navigation_launch.py ",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "launch robot_avoidance",
+            "detail": "launch robot_avoidance",
+            "type": "shell",
+            "command": "ros2 run robot_avoidance robot_avoidance --ros-args --params-file /workspaces/capella_ros_docker/src/garage_utils_pkg/garage_navigator/params/dsf_nav2_for_ad_4_exhibition.yaml",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+
+        {
+            "label": "build nav2_bringup",
+            "detail": "Build nav2_bringup Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/navigation2/nav2_bringup --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "build bond",
+            "detail": "Build bond Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/bond --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build multi_robots",
+            "detail": "Build multi_robots Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/multi_robots --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build multi_robots_info",
+            "detail": "Build multi_robots_info Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/capella_multi_robots_info --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build find_free_space",
+            "detail": "Build find_free_space Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/find_free_space --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build costmap_convertor",
+            "detail": "Build costmap_convertor Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/teb_local_planner src/costmap_converter --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        
+        {
+            "label": "start wall_line_detection (debug)",
+            "detail": "start wall_line_detection Packages",
+            "type": "shell",
+            "command": "ros2 launch wall_line_detection wall_line_detection.launch.py wall_line_log_level:=debug",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build usb_camera",
+            "detail": "build usb_camera",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/usb_cam --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build laser-line-segment",
+            "detail": "build laser-line-segment",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/laser-line-segment --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start wall_line_detection (info)",
+            "detail": "start wall_line_detection Packages",
+            "type": "shell",
+            "command": "ros2 launch wall_line_detection wall_line_detection.launch.py",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start wall_line_test (info)",
+            "detail": "start wall_line_detection Packages",
+            "type": "shell",
+            "command": "ros2 run wall_line_detection wall_line_test --ros-args --params-file /workspaces/capella_ros_docker/src/wall_line_detection/wall_line_detection/param/config.yaml",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start multi_robots_avoidance",
+            "detail": "start multi_robots_avoidance Packages",
+            "type": "shell",
+            "command": "CAPELLA_ROS_NAMESPACE=MK9 ROBOT_PRIORITY=9 ros2 launch nav2_multi_robots_avoidance multi_robots_avoidance.launch.py",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start laser_line_segment",
+            "detail": "start laser_line_segment Packages",
+            "type": "shell",
+            "command": "ros2 launch laserline laserline.launch.py",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start multi_robots_info_sub",
+            "detail": "start multi_robots_info_sub Packages",
+            "type": "shell",
+            "command": "CAPELLA_ROS_NAMESPACE=MK9 ros2 run capella_multi_robots_info multi_robots_sub_node",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start multi_robots_info_pub",
+            "detail": "start multi_robots_info_pub Packages",
+            "type": "shell",
+            "command": "CAPELLA_ROS_NAMESPACE=MK9 ros2 run capella_multi_robots_info multi_robots_pub_node",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "start wall_line_test (debug)",
+            "detail": "start wall_line_detection Packages",
+            "type": "shell",
+            "command": "ros2 run wall_line_detection wall_line_test --ros-args --params-file /workspaces/capella_ros_docker/src/wall_line_detection/wall_line_detection/param/config.yaml --log-level wall_line_test:=debug",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+
+        {
+            "label": "build apriltag",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/apriltag --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -46,10 +444,87 @@
             "problemMatcher": "$gcc"
         },
         {
+            "label": "start camera",
+            "detail": "start camera",
+            "type": "shell",
+            "command": "CAMERA1_NUMBER=CH2Y83100DL CAMERA2_NUMBER=CH2F9310032 CAMERA3_NUMBER=CH23C4200W2  ros2 launch astra_camera multi_dabai_dcw.launch.py ",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build capella_clean_garbage",
+            "detail": "Build capella_clean_garbage",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/capella_clean_garbage --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build dock",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/capella_ros_dock/capella_ros_dock src/capella_ros_dock/capella_ros_dock_msgs --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build wall_line_detection",
+            "detail": "Build wall_line_detection Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/wall_line_detection --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build charge",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/charge_manager_pkg/charge_manager src/charge_manager_pkg/charge_manager_msgs --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
             "label": "build capella_msgs",
             "detail": "Build Navigation2 Packages",
             "type": "shell",
             "command": "colcon build --merge-install --symlink-install --base-paths src/capella_msgs/capella_ros_msg src/capella_msgs/capella_ros_service_interfaces --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build welt_model",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/welt_model --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build robot_avoidance",
+            "detail": "Build Navigation2 Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/robot_avoidance --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -94,6 +569,17 @@
             "detail": "Build capella_lidar_pack_wxb Packages",
             "type": "shell",
             "command": "colcon build --merge-install --symlink-install --base-paths src/capella_lidar_pack_wxb/lidar_detect_person src/capella_lidar_pack_wxb/wj_716n_lidar src/capella_lidar_pack_wxb/wr_ls_udp src/capella_lidar_pack_wxb/wr_klm_high_80  --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build nanodet_client",
+            "detail": "Build capella_nanodet_client_gpu Packages",
+            "type": "shell",
+            "command": "colcon build --merge-install --symlink-install --base-paths src/capella_nanodet_client_gpu  --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' -Wall -Wextra -Wpedantic",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -366,7 +852,7 @@
             "label": "install dependencies",
             "detail": "Install all dependencies specified in the workspaces package.xml files.",
             "type": "shell",
-            "command": "sudo apt-get update && rosdepc update && rosdepc install --from-paths src  src/navigation2/nav2_behavior_tree src/cartographer_ros/cartographer_ros --ignore-src -y",
+            "command": "sudo apt-get update && rosdepc update && rosdepc install --from-paths src --ignore-src  -y",
             "problemMatcher": []
         },
         {

@@ -11,7 +11,7 @@
   <depend>nav_msgs</depend>
   <depend>python3-psutil</depend>
   <depend>python3-pil</depend>
-  <depend>capella_ros_msg</depend>
+  <!-- <depend>capella_ros_msg</depend> -->
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

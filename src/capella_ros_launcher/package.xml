@@ -11,7 +11,7 @@
 
   <depend>robot_localization</depend>
   <depend>rclcpp</depend>
-  <depend>capella_ros_msg</depend>
+  <!-- <depend>capella_ros_msg</depend> -->
   <depend>tf2_ros</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>

@@ -5,8 +5,10 @@ FROM registry.cn-hangzhou.aliyuncs.com/ritju/ros2:humble-full AS full
 ENV DEBIAN_FRONTEND=noninteractive
 COPY "files/ros2.list" "/etc/apt/sources.list.d/"
 COPY "files/sources.list" "/etc/apt/"
-RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 \
-    && apt-get update \
+# COPY "files/ros.key" "/usr/share/keyrings/ros-archive-keyring.gpg"
+# RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 \
+RUN sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
+RUN apt-get update \
     && apt-get -y install --no-install-recommends \
     ros-humble-rmw-cyclonedds-cpp \
     python3-pytest \
