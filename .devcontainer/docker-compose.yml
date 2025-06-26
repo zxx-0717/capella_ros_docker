@@ -28,7 +28,7 @@ services:
       - CAMERA1_NUMBER=CH2Y831004T # 每台都需要配置
       - CAMERA2_NUMBER=CH2Y8310067 # 每台都需要配置
       - CAMERA3_NUMBER=CH2Y831008K # 每台都需要配置
-      - CYCLONEDDS_URI=/map/dds.xml
+      - CYCLONEDDS_URI=/workspaces/capella_ros_docker/.devcontainer/files/dds.xml
       # - marker_id_and_bluetooth_mac=585/94:C9:60:43:BE:06,586/94:C9:60:43:BE:05,587/94:C9:60:43:BE:07 # 每台都需要配置
       - marker_id_and_bluetooth_mac=2/94:C9:60:43:BE:07,4/94:C9:60:43:BE:06,3/94:C9:60:43:BE:05
       - CHARGER_MARKER_TYPE=APRILTAG # 每台都需要配置

@@ -4,6 +4,7 @@
         100
     ],
     "files.associations": {
+        "*.sdf": "xml",
         "*.repos": "yaml",
         "*.rviz": "yaml",
         "*.world": "xml",
@@ -92,7 +93,9 @@
         "source_location": "cpp",
         "numbers": "cpp",
         "semaphore": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "charconv": "cpp",
+        "ranges": "cpp"
     },
     "python.analysis.extraPaths": [
         "/opt/ros/foxy/lib/python3.8/site-packages/"
