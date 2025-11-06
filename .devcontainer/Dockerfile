@@ -1,4 +1,5 @@
-FROM registry.cn-hangzhou.aliyuncs.com/ritju/ros2:humble-full AS full
+# FROM registry.cn-hangzhou.aliyuncs.com/ritju/ros2:humble-full AS full
+FROM registry.cn-hangzhou.aliyuncs.com/ritju/cudnn:opencv-cuda-ros AS base
 
 # ** [Optional] Uncomment this section to install additional packages. **
 #
