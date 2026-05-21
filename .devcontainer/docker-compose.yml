@@ -52,7 +52,7 @@ services:
     volumes:
       - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
       - /dev/dri:/dev/dri
-      # - /home/tj2022/map:/map
+      - /home/tj2022/map:/map
       - /dev/bus/usb:/dev/bus/usb
       - agent_data:/data
       - posegraph_export:/tmp/.posegraph_export
